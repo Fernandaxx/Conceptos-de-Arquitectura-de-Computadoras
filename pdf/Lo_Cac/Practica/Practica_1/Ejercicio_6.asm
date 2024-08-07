@@ -1,0 +1,23 @@
+ORG 1000H
+    TABLA DB 2,4,6,8,10,12,14,16,18,20
+    FIN DB ?
+    TOTAL DB ?
+    MAX DB 11
+ORG 2000H
+    MOV AL, 0 ; cant num <= MAX
+    MOV AH, MAX 
+    MOV CL, OFFSET FIN-OFFSET TABLA
+    MOV BX, OFFSET TABLA
+CALC: 
+    CMP [BX], AH
+    JS COND_F
+COND_V:
+    INC AL
+COND_F:
+    INC BX
+    DEC CL
+    JNZ CALC
+    MOV BX, OFFSET TOTAL
+    MOV [BX],  AL
+    HLT
+    END

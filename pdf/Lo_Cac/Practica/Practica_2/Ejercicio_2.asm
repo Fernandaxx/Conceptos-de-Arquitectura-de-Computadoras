@@ -1,0 +1,14 @@
+ORG 1000H 
+MSJ  DB  01H
+  
+ ORG 2000H 
+     MOV BX, OFFSET MSJ 
+     MOV Al, 01H
+     MOV CL, 07EH
+LOOP:
+     INT 7
+     INC BYTE PTR [BX]
+     DEC CL
+     JNZ LOOP
+     INT 0 
+ END

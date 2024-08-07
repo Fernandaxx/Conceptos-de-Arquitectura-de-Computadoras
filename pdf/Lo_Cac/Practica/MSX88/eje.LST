@@ -1,0 +1,160 @@
+
+								página: 1 
+
+ Listado Fuente: eje.LST
+ Programa Fuente en: eje.ASM
+ Fecha: Sun Apr 30 11:27:22 2023
+
+  Dir. Codigo maquina	 Linea 	 Codigo en lenguaje ensamble
+
+			      1	; pio
+			      2	pa equ 30h
+			      3	pb equ 31h
+			      4	ca equ 32h
+			      5	cb equ 33h
+			      6	
+			      7	org 1000h
+ 1000 00 00 57 65 27 72	      8	        texto db 0,0,"We're no strangers to love
+				", 0ah
+ 1006 65 20 6E 6F 20 73
+ 100C 74 72 61 6E 67 65
+ 1012 72 73 20 74 6F 20
+ 1018 6C 6F 76 65 0A
+ 101D 59 6F 75 20 6B 6E	      9	              db "You know the rules and so do I
+				", 0ah
+ 1023 6F 77 20 74 68 65
+ 1029 20 72 75 6C 65 73
+ 102F 20 61 6E 64 20 73
+ 1035 6F 20 64 6F 20 49
+ 103B 0A
+ 103C 41 20 66 75 6C 6C	     10	              db "A full commitment's what I'm t
+				hinking of", 0ah
+ 1042 20 63 6F 6D 6D 69
+ 1048 74 6D 65 6E 74 27
+ 104E 73 20 77 68 61 74
+ 1054 20 49 27 6D 20 74
+ 105A 68 69 6E 6B 69 6E
+ 1060 67 20 6F 66 0A
+ 1065 59 6F 75 20 77 6F	     11	              db "You wouldn't get this from any
+				 other guy", 0ah
+ 106B 75 6C 64 6E 27 74
+ 1071 20 67 65 74 20 74
+ 1077 68 69 73 20 66 72
+ 107D 6F 6D 20 61 6E 79
+ 1083 20 6F 74 68 65 72
+ 1089 20 67 75 79 0A
+ 108E 49 20 6A 75 73 74	     12	              db "I just wanna tell you how I'm 
+				feeling", 0ah
+ 1094 20 77 61 6E 6E 61
+ 109A 20 74 65 6C 6C 20
+ 10A0 79 6F 75 20 68 6F
+ 10A6 77 20 49 27 6D 20
+ 10AC 66 65 65 6C 69 6E
+ 10B2 67 0A
+ 10B4 47 6F 74 74 61 20	     13	              db "Gotta make you understand", 0a
+				h
+ 10BA 6D 61 6B 65 20 79
+ 10C0 6F 75 20 75 6E 64
+ 10C6 65 72 73 74 61 6E
+ 10CC 64 0A
+ 10CE 4E 65 76 65 72 20	     14	              db "Never gonna give you up", 0ah
+ 10D4 67 6F 6E 6E 61 20
+ 10DA 67 69 76 65 20 79
+ 10E0 6F 75 20 75 70 0A
+ 10E6 4E 65 76 65 72 20	     15	              db "Never gonna let you down", 0ah
+
+
+
+								página: 2 
+
+ 10EC 67 6F 6E 6E 61 20
+ 10F2 6C 65 74 20 79 6F
+ 10F8 75 20 64 6F 77 6E
+ 10FE 0A
+			     16	              ;db "Never gonna run around and de
+				sert you", 0ah
+			     17	              ;db "Never gonna make you cry", 0a
+				h
+			     18	              ;db "Never gonna say goodbye", 0ah
+			     19	              ;db "Never gonna tell a lie and hu
+				rt you", 0ah
+ 10FF 4E		     20	        texto_fin db ?
+ 1100 FF		     21	        texto_length db offset texto_fin - offse
+				t texto
+			     22	
+			     23	org 2000h
+			     24	        ; configuracion pio
+ 2000 B0 03		     25	        mov al, 00000011b ; 1 entrada de dato
+ 2002 E6 32		     26	        out ca, al        ; puerto a del pio ent
+				rada
+			     27	        
+ 2004 B0 00		     28	        mov al, 00000000b ; 0 salida de dato
+ 2006 E6 33		     29	        out cb, al        ; puento b del pio sal
+				ida 
+			     30	
+			     31	        ; poner strobe en 0
+ 2008 E4 30		     32	        in al, pa            ; guardo info de la
+				 impresora en al
+ 200A 80 E0 FD		     33	        and al, 11111101b    ; pongo el bit stro
+				be en 0 
+ 200D E6 30		     34	        out pa, al
+			     35	
+ 200F 8A 0E 00 11	     36	        mov cl, texto_length ; contador texto
+ 2013 BB 00 10		     37	        mov bx, offset texto ; direccion de las 
+				letras
+			     38	
+ 2016 E4 30		     39	poll:   in al, pa            ; reviso si la impr
+				esora esta busy
+ 2018 80 E0 01		     40	        and al, 1            ; si al tiene el bi
+				t menos significativo 
+			     41	                             ; en 1 la impresora
+				 esta busy
+ 201B 75 F9		     42	        jnz poll             ; si no se prende l
+				a z flag loopea
+			     43	
+ 201D 8A 07		     44	        mov al, [bx]         ; guardo en al el c
+				aracter
+ 201F E6 31		     45	        out pb, al           ; envio el caracter
+				 a imprmimir
+			     46	
+			     47	        ; pulso de strobe
+ 2021 E4 30		     48	        in al, pa            ; guardo info de im
+				presora
+ 2023 80 C8 02		     49	        or al, 00000010b     ; enciendo el bit s
+				trobe
+ 2026 E6 30		     50	        out pa, al           ; envio el bit stro
+				be
+ 2028 E4 30		     51	        in al, pa            ; guardo info de im
+				presora
+ 202A 80 E0 FD		     52	        and al, 11111101b    ; apago el bit stro
+				be
+
+
+
+								página: 3 
+
+ 202D E6 30		     53	        out pa, al           ; envio el bit stro
+				be
+			     54	        
+ 202F FF C3		     55	        inc bx               ; siguiente caracte
+				r
+ 2031 FE C9		     56	        dec cl               ; decrezco contador
+ 2033 75 E1		     57	        jnz poll
+			     58	
+ 2035 CD 00		     59	        int 0
+			     60	      
+			     61	end
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ pa      	Constante	  30h
+ pb      	Constante	  31h
+ ca      	Constante	  32h
+ cb      	Constante	  33h
+ texto   	Mem. Byte	1000h
+ texto_fi	Mem. Byte	10FFh
+ texto_le	Mem. Byte	1100h
+ poll    	Etiqueta	2016h

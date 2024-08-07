@@ -1,0 +1,20 @@
+ORG 1000H
+    A DB 00H
+    B DB 02H
+    TOTAL DB ?
+ORG 2000H
+    MOV BX, OFFSET TOTAL
+    MOV AL, 0
+    MOV DL, A
+    CMP DL, 0
+    JZ FIN
+    MOV CL, B
+MUL:
+    CMP CL, 0
+    JZ FIN
+    ADD AL, DL
+    DEC CL
+    JMP MUL
+FIN: MOV [BX], AL
+    HLT
+    END

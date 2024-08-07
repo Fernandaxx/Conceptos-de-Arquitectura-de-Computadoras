@@ -1,0 +1,20 @@
+ORG 1000H
+INICIO db "0"
+FIN DB "9"
+
+
+
+
+ORG 2000H 
+MOV BX, OFFSET INICIO
+MOV AL, 1
+MOV CL, INICIO
+MOV CH, FIN
+
+LOOP: MOV [BX], CL
+      INT 7
+      INC CL
+      CMP CL, CH
+      JNZ LOOP 
+INT 0
+END 

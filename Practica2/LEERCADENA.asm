@@ -1,0 +1,14 @@
+ORG 1000H
+CAR DB ? , ? ,? ,? ,?
+FIN DB ?
+
+ORG 2000H
+MOV BX, OFFSET CAR
+MOV AL, OFFSET FIN - OFFSET CAR
+LOOP: INT 6
+      INC BX
+      DEC AL
+      JNZ LOOP
+      
+INT 0
+END

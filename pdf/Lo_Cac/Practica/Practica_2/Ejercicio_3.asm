@@ -1,0 +1,16 @@
+ORG 1000H 
+    CAR DB 41H
+  
+ORG 2000H 
+     MOV BX, OFFSET CAR
+     MOV Al, 01H
+     MOV CL, 26
+LOOP:
+     INT 7
+     ADD BYTE PTR [BX], 20H
+     INT 7
+     SUB BYTE PTR [BX], 1FH
+     DEC CL
+     JNZ LOOP
+     INT 0 
+END

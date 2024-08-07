@@ -1,0 +1,60 @@
+TIMER EQU 10H 
+PIC EQU 20H 
+EOI EQU 20H 
+N_CLK EQU 10 
+  
+ ORG 40 
+IP_CLK DW RUT_CLK 
+  
+ ORG 1000H 
+    SEG DB "0"
+    FIN DB ? 
+    NUM DB "7"
+  
+ ORG 3000H 
+    CLEAN DB 12
+LIMPIAR_CONSOLA: 
+    PUSH BX
+    PUSH AX
+    MOV BX, OFFSET CLEAN
+    MOV AL, 1
+    INT 7
+    POP AX
+    POP BX
+    RET
+
+RUT_CLK:  PUSH AX 
+    CALL LIMPIAR_CONSOLA
+    INT 7 
+    DEC NUM
+  
+    MOV AL, 0 
+    OUT TIMER, AL 
+    MOV AL, EOI 
+    OUT PIC, AL 
+    CMP NUM, 30H
+    JNS NO_TERMINAR
+    INT 0
+NO_TERMINAR: 
+    POP AX 
+    IRET 
+  
+ ORG 2000H 
+ CLI 
+ MOV AL, 0FDH 
+ OUT PIC+1, AL       ; PIC: registro IMR 
+ MOV AL, N_CLK  
+ OUT PIC+5, AL       ; PIC: registro INT1 
+ MOV AL, 1 
+ OUT TIMER+1, AL     ; TIMER: registro COMP 
+ MOV AL, 0 
+ OUT TIMER, AL       ; TIMER: registro CONT 
+ MOV BX, OFFSET NUM 
+ INT 6
+ MOV AL, 1 
+ STI 
+
+ 
+LAZO: JMP LAZO 
+  
+ END

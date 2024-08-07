@@ -1,0 +1,28 @@
+ORG 1000H
+INICIO db "0"
+FINAL DB "9"
+NEWLINE DW 10
+
+
+
+
+ORG 2000H 
+MOV BX, OFFSET INICIO
+MOV AL, 1
+MOV CL, INICIO
+MOV CH, FINAL
+
+LOOP: MOV [BX], CL
+      INT 7
+      PUSH BX
+      MOV BX, OFFSET NEWLINE
+      INT 7
+      POP BX
+      INC CL
+      CMP CL, CH
+      JZ FIN
+      JMP LOOP
+      FIN: MOV [BX], CL
+           INT 7    
+INT 0
+END 
